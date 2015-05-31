@@ -9,7 +9,7 @@ def init():
 	init github pages
 	
 	"""
-	pass
+	print 'init'
 	
 
 def list(title=None, date=None):
@@ -19,7 +19,7 @@ def list(title=None, date=None):
 	:param date:  blog created/modified date
 	:return
 	"""
-	pass
+	print 'list ', title, ' ', date
 
 def create(title, date=None):
 	"""
@@ -28,7 +28,7 @@ def create(title, date=None):
 	:param date:  created date
 	:return
 	"""
-	pass
+	print 'create ', title, ' ', date
 
 def edit(title, date=None):
 	"""
@@ -37,7 +37,7 @@ def edit(title, date=None):
 	:param date: blog created/modified date
 	:return
 	"""
-	pass
+	print 'edit ', title, ' ', date
 	
 	
 def remove(title, date=None):
@@ -47,12 +47,41 @@ def remove(title, date=None):
 	:param date: blog created/modified date
 	:return
 	"""
-	pass
+	print 'remove ', title, ' ', date
 	
 
 	
+def usage():
+	"""
+	print usage and exit
+	"""
+	usage = [
+		'Usage:',
+		'\tpython poster action title [date]',
+		'',
+		'action list:'
+		'\tinit: init github pages',
+		'\tcreate: create new blog',
+		'\tedit: edit exist blog',
+		'\tremove: remove exist blog',
+		'\tlist: list blog',
+	]
+	print '\n'.join(usage)
+	sys.exit(1)
 
 if __name__ == '__main__':
-	pass
+	if len(sys.argv)>=2 and sys.argv[1] == 'init':
+		init()
+	elif len(sys.argv)>=2 and sys.argv[1] != 'init':
+		action = sys.argv[1]
+		title = None
+		date = None
+		if len(sys.argv)>=3:
+			title = sys.argv[2]
+		if len(sys.argv)>=4:
+			title = sys.argv[4]
+		globals()[action](title, date)
+	else:
+		usage()
 
 	
