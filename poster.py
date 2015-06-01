@@ -1,14 +1,21 @@
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
 """A simple poster for use Github Pages as Blog"""
-import markdown2
 import sys
+import os
+import markdown2
 	
 def init():
 	"""
 	init github pages
 	
 	"""
+	if os.path.exists('.layout'):
+		print '.layout file exists'
+	else:
+		if not os.path.exists('index.html'):
+			print 'can not find index.html!'
+			return
 	print 'init'
 	
 
