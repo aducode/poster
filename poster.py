@@ -5,8 +5,11 @@ import sys
 import os
 import markdown2
 
-LAYOUT_PATH='layout'
+LAYOUT_PATH='$layout'
 DEFAULT_LAYOUT='default.layout'
+
+POST_PATH='$post'
+
 
 def init():
 	"""
@@ -34,6 +37,8 @@ def init():
 			'</body>',
 			'</html>',
 			]))
+	if not os.path.exists(POST_PATH):
+		os.makedirs(POST_PATH)
 	
 
 def list(title=None, date=None):
