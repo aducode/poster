@@ -4,19 +4,36 @@
 import sys
 import os
 import markdown2
-	
+
+LAYOUT_PATH='layout'
+DEFAULT_LAYOUT='default.layout'
+
 def init():
 	"""
 	init github pages
 	
 	"""
-	if os.path.exists('.layout'):
-		print '.layout file exists'
-	else:
-		if not os.path.exists('index.html'):
-			print 'can not find index.html!'
-			return
-	print 'init'
+	if not os.path.exists(LAYOUT_PATH):
+		os.makedirs(LAYOUT_PATH)
+	layout_file = os.path.join(LAYOUT_PATH, DEFAULT_LAYOUT)
+	if not os.path.isfile(layout_file):
+		with open(layout_file,'w') as layout:
+			layout.write('\n'.join([
+			'<!DOCTYPE html>',
+			'<html>',
+			'<head>',
+			'<meta charset="utf-8"/>',
+			'<meta http-equiv="X-UA-Compatible" content="chrome=1"/>',
+			'<!-- css -->',
+			'<!-- title -->',
+			'<title>{title}</title>',
+			'</head>',
+			'<body>',
+			'<!-- content -->',
+			'{content}',
+			'</body>',
+			'</html>',
+			]))
 	
 
 def list(title=None, date=None):
