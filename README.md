@@ -13,6 +13,7 @@ A simple tool for publish blog
 >        poster action title [date]
 >
 >action list:
+
 >        init: init github pages
 >        clear: clear generated files
 >        create name [date]: create new blog
