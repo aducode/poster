@@ -3,6 +3,7 @@
 """A simple poster for use Github Pages as Blog"""
 import sys
 import os
+import re
 import datetime
 import shutil
 import markdown2
@@ -10,7 +11,8 @@ import markdown2
 LAYOUT_PATH='.layout'
 DEFAULT_LAYOUT='default.layout'
 
-POST_PATH='.posts'
+MD_PATH='.posts'
+POST_PATH='posts'
 
 INDEX='.id'
 
@@ -20,7 +22,7 @@ HOME='index.html'
 
 
 def _check_env():
-	return os.path.isfile(INDEX) and os.path.exists(POST_PATH) and os.path.exists(LAYOUT_PATH)
+	return os.path.isfile(INDEX) and os.path.exists(MD_PATH) and os.path.exists(LAYOUT_PATH)
 
 def init():
 	"""
@@ -72,8 +74,8 @@ def init():
 			'</html>',
 			'',
 			]))
-	if not os.path.exists(POST_PATH):
-		os.makedirs(POST_PATH)
+	if not os.path.exists(MD_PATH):
+		os.makedirs(MD_PATH)
 	if not os.path.exists(INDEX):
 		with open(INDEX,'w') as idfile:
 			idfile.write('\n'.join([
@@ -91,8 +93,8 @@ def clear():
 		return
 	if os.path.exists(LAYOUT_PATH):
 		shutil.rmtree(LAYOUT_PATH)
-	if os.path.exists(POST_PATH):
-		shutil.rmtree(POST_PATH)
+	if os.path.exists(MD_PATH):
+		shutil.rmtree(MD_PATH)
 	if os.path.isfile(INDEX):
 		os.remove(INDEX)
 
@@ -146,9 +148,9 @@ def create(title, date):
 	if r is not None:
 		print '[!] create %s %s fail, it has exists\n\n' % (title, date)
 		usage(False)
-	if not os.path.exists(os.path.join(POST_PATH, date)):
-		os.makedirs(os.path.join(POST_PATH, date))
-	with open(os.path.join(POST_PATH, date, '%s.md'%title), 'w') as post:
+	if not os.path.exists(os.path.join(MD_PATH, date)):
+		os.makedirs(os.path.join(MD_PATH, date))
+	with open(os.path.join(MD_PATH, date, '%s.md'%title), 'w') as post:
 		post.write('<!-- default -->')
 		with open(INDEX, 'r+') as idfile:
 			idx=int(idfile.readline()[1:])
@@ -209,7 +211,32 @@ def build():
 	md生成html
 	更新index.html目录
 	"""
-	pass
+	def mk2html(title, date):
+		if not os.path.exists(os.path.join(POST_PATH, date)):
+			os.makedirs(os.path.join(POST_PATH, date))
+		with open(os.path.join(MD_PATH, date, '%s.md'%title)) as md:
+			_layout = md.readline().replace('<!--','').replace('-->','').strip()
+			if not os.path.exists(os.path.join(LAYOUT_PATH,'%s.layout'%_layout)):
+				print '[!] layout %s not exists' % _layout
+			else:
+				with open(os.path.join(LAYOUT_PATH, '%s.layout'%_layout)) as _layout_file:
+					with open(os.path.join(POST_PATH, date, '%s.html'%title), 'w') as html:
+						html.write(_layout_file.read().format(content=markdown2.markdown(md.read()), title=title))
+	def rebuild_contents():
+		"""
+		从新生成目录
+		"""
+		re_text='\s*<\s*!--\s*\{\s*contents-start\s*\}\s*-->\s*\n((.|\n)*)\s*<\s*!--\s*\{\s*contents-end\s*\}\s*-->'
+		with open(HOME,'r+') as home:
+			dom = home.read()
+			m = re.search(re_text, dom)
+			if m:
+				print m.start(1), m.end(1)
+			else:
+				print 'no match'
+			
+	mk2html('test','2015-06-04')
+	rebuild_contents()
 
 	
 def usage(display=True):
