@@ -31,4 +31,4 @@ A simple tool for publish blog
 
 ###What's next?
 
-This tool is based on GitHub Pages, but with different theme github provided, some markdown grammar like ```code``` can not be translated correctly to html, next I will do something specially to correct this.
+>This tool is based on GitHub Pages, but with different theme github provided, some markdown grammar like ```code``` can not be translated correctly to html, next I will do something specially to correct this.
