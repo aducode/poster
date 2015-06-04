@@ -16,6 +16,8 @@ INDEX='.id'
 
 DATE_FMT='%Y-%m-%d'
 
+HOME='index.html'
+
 
 def _check_env():
 	return os.path.isfile(INDEX) and os.path.exists(POST_PATH) and os.path.exists(LAYOUT_PATH)
@@ -25,6 +27,23 @@ def init():
 	init github pages
 	
 	"""
+	if not os.path.exists(HOME):
+		with open(HOME,'w') as home:
+			home.write('\n'.join([
+			'<!DOCTYPE html>',
+			'<html>',
+			'<head>',
+			'<meta charset="utf-8"/>',
+			'<meta http-equiv="X-UA-Compatible" content="chrome=1"/>',
+			'<title>Home Page</title>',
+			'</head>',
+			'<body>',
+			'<h1>Home Page</h1>',
+			'<!--{index-start}-->',
+			'<!--{index-end}-->',
+			'</body>',
+			'</html>',
+			]))
 	if not os.path.exists(LAYOUT_PATH):
 		os.makedirs(LAYOUT_PATH)
 	layout_file = os.path.join(LAYOUT_PATH, DEFAULT_LAYOUT)
