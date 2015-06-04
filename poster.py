@@ -213,13 +213,13 @@ def remove(name, date):
 	
 	
 
-def build(force_build=False):
+def build(force_build=True):
 	"""
 	md生成html
 	更新index.html目录
 	:param force_build: 是否强制重新转换markdown
 	"""
-	def mk2html(name, date):
+	def mk2html(name, date, need_build):
 		re_text='\s*<\s*!--\s*\{\s*layout:(.+)\s+title:(.+)\s*\}\s*-->'
 		if not os.path.exists(os.path.join(POST_PATH, date)):
 			os.makedirs(os.path.join(POST_PATH, date))
@@ -230,6 +230,8 @@ def build(force_build=False):
 			if m:
 				_layout=m.group(1)
 				_title = m.group(2)
+			if not need_build:
+				return _title
 			if not os.path.exists(os.path.join(LAYOUT_PATH,'%s.layout'%_layout)):
 				print '[!] layout %s not exists' % _layout
 			else:
@@ -242,27 +244,24 @@ def build(force_build=False):
 	with open(HOME,'r+') as home:
 		dom = home.read()
 		new_contents = []
-		del_flag = False
 		with open(INDEX, 'r+') as index_file:
 			buf = []
 			for line in index_file:
 				if line and not line.startswith('#'):
 					_id, _name, _date = tuple(line[1:].split())
 					if line.startswith('+'):							
-						_title = mk2html(_name, _date)
+						_title = mk2html(_name, _date, True)
 						if _title:
 							buf.append((' '+line[1:]).rstrip('\n'))
 							new_contents.append((_name, _title, _date))
 						else:
 							buf.append(line.rstrip('\n'))
 					elif line.startswith('-'):
-						del_flag = True
 						buf.append(line.rstrip('\n'))
 					elif line.startswith(' '):
-						if force_build:
-							_title = mk2html(_name, _date)
-							if _title:
-								new_contents.append((_name, _title, _date))
+						_title = mk2html(_name, _date, force_build)
+						if _title:
+							new_contents.append((_name, _title, _date))
 						buf.append(line.rstrip('\n'))
 				elif line.startswith('#'):
 					buf.append(line.rstrip('\n'))
@@ -270,7 +269,7 @@ def build(force_build=False):
 			index_file.truncate(0)
 			index_file.write('\n'.join(buf))
 		m = re.search(re_text, dom)
-		if del_flag or m and new_contents:
+		if m and new_contents:
 			content_start = m.start(1)
 			content_end = m.end(1)
 			before = dom[:content_start]
@@ -278,11 +277,9 @@ def build(force_build=False):
 			home.seek(0)
 			home.truncate(0)
 			home.write(before)
-			home.write('<!--{contents-start}-->\n')
 			home.write('<ul>\n')
 			home.write('\n'.join(['<li><a href="posts/{date}/{name}.html" target="_blank">{title} [{date}]</a></li>'.format(name=name, title=title, date=date) for name, title, date in new_contents]))
 			home.write('\n</ul>\n')
-			home.write('<!--{contents-end}-->')
 			home.write(after)
 
 	
