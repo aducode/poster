@@ -10,15 +10,15 @@ A simple tool for publish blog
 ###Quick Usage
 
 >Usage:
-        poster action title [date]
-
-action list:
-        init: init github pages
-        clear: clear generated files
-        create name [date]: create new blog
-        remove name [date]: remove exist blog
-        list [name] [date]: list blog
-        build: markdown to html
+>        poster action title [date]
+>
+>action list:
+>        init: init github pages
+>        clear: clear generated files
+>        create name [date]: create new blog
+>        remove name [date]: remove exist blog
+>        list [name] [date]: list blog
+>        build: markdown to html
 
 ###Directory structure
 
