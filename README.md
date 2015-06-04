@@ -28,3 +28,7 @@ A simple tool for publish blog
 * **.posts/date/markdown.md**  markdown files
 * **posts/date/html.html**  html files, when excute poster build, the html files translated fom markdown files
 * **index.html**
+
+###What's next?
+
+This tool is based on GitHub Pages, but with different theme github provided, some markdown grammar like ```code``` can not be translated correctly to html, next I will do something specially to correct this.
