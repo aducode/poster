@@ -58,7 +58,7 @@ target/
 
 #
 .layout/
-.posts/
+.posts/*
 .id
 index.html
 .id

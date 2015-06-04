@@ -39,11 +39,17 @@ def init():
 			'</head>',
 			'<body>',
 			'<h1>Home Page</h1>',
-			'<!--{index-start}-->',
-			'<!--{index-end}-->',
+			'<!--{contents-start}-->',
+			'<!--{contents-end}-->',
 			'</body>',
 			'</html>',
 			]))
+	else:
+		print '[!] %s exists\n' % HOME
+		print 'if you want generate contents, please insert'
+		print '\t<!--{contents-start}-->'
+		print '\t<!--{contents-end}}-->'
+		print 'in %s' % HOME
 	if not os.path.exists(LAYOUT_PATH):
 		os.makedirs(LAYOUT_PATH)
 	layout_file = os.path.join(LAYOUT_PATH, DEFAULT_LAYOUT)
@@ -105,7 +111,7 @@ def list(title=None, date=None):
 	with open(INDEX) as id:
 		for line in id:
 			line=line.rstrip()
-			if not line.startswith('#') and line:
+			if line and not line.startswith('#') and not line.startswith('-'):
 				token=line.split()
 				_id = int(token[0])
 				_title=token[1]
@@ -149,7 +155,7 @@ def create(title, date):
 			id_info=['#%d'%(idx+1),]
 			for line in idfile:
 				id_info.append(line.rstrip())
-			id_info.append(' %d %s %s' % (idx, title, date))
+			id_info.append('+%d %s %s' % (idx, title, date))
 			idfile.seek(0)
 			idfile.truncate(0)
 			idfile.write('\n'.join(id_info))
@@ -183,11 +189,13 @@ def remove(title, date):
 		k, v = ret.items()[0]
 		_id = k
 		_title, _date = v
+	if raw_input('[?] continue to remove %s %s [Y/N]:'%(_title, _date)).upper()!='Y':
+		usage(False)
 	with open(INDEX,'r+') as idfile:
 		buf = []	
 		for line in idfile:
 			if not line.startswith('#') and int(line.lstrip().split()[0]) == _id:
-				buf.append(('#'+line[1:]).rstrip('\n'))
+				buf.append(('-'+line[1:]).rstrip('\n'))
 			else:
 				buf.append(line.rstrip('\n'))
 		idfile.seek(0)
@@ -195,6 +203,13 @@ def remove(title, date):
 		idfile.write('\n'.join(buf))
 	
 	
+
+def build():
+	"""
+	md生成html
+	更新index.html目录
+	"""
+	pass
 
 	
 def usage(display=True):
@@ -212,6 +227,7 @@ def usage(display=True):
 		'\tcreate title [date]: create new blog',
 		'\tremove title [date]: remove exist blog',
 		'\tlist [title] [date]: list blog',
+		'\tbuild: markdown to html',
 	]
 	if display:
 		print '\n'.join(usage)
@@ -222,6 +238,8 @@ if __name__ == '__main__':
 		init()
 	elif len(sys.argv)>=2 and sys.argv[1] == 'clear':
 		clear()
+	elif len(sys.argv)>=2 and sys.argv[1] == 'build':
+		build()
 	elif len(sys.argv)>=2 and (sys.argv[1] != 'init' and sys.argv[1] != 'clear'):
 		action = sys.argv[1]
 		if action == '_check_env':
