@@ -242,6 +242,7 @@ def build(force_build=False):
 	with open(HOME,'r+') as home:
 		dom = home.read()
 		new_contents = []
+		del_flag = False
 		with open(INDEX, 'r+') as index_file:
 			buf = []
 			for line in index_file:
@@ -255,6 +256,7 @@ def build(force_build=False):
 						else:
 							buf.append(line.rstrip('\n'))
 					elif line.startswith('-'):
+						del_flag = True
 						buf.append(line.rstrip('\n'))
 					elif line.startswith(' '):
 						if force_build:
@@ -268,7 +270,7 @@ def build(force_build=False):
 			index_file.truncate(0)
 			index_file.write('\n'.join(buf))
 		m = re.search(re_text, dom)
-		if m and new_contents:
+		if del_flag or m and new_contents:
 			content_start = m.start(1)
 			content_end = m.end(1)
 			before = dom[:content_start]
