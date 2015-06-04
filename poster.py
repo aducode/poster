@@ -7,12 +7,12 @@ import datetime
 import shutil
 import markdown2
 
-LAYOUT_PATH='layout'
+LAYOUT_PATH='.layout'
 DEFAULT_LAYOUT='default.layout'
 
-POST_PATH='post'
+POST_PATH='.posts'
 
-INDEX='id'
+INDEX='.id'
 
 DATE_FMT='%Y-%m-%d'
 
@@ -83,10 +83,9 @@ def list(title=None, date=None):
 	with open(INDEX) as id:
 		for line in id:
 			line=line.rstrip()
-			print line
 			if not line.startswith('#') and line:
-				token=line.strip()
-				_id = token[0]
+				token=line.split()
+				_id = int(token[0])
 				_title=token[1]
 				_date=token[2]
 				if title is not None:
@@ -98,8 +97,7 @@ def list(title=None, date=None):
 							ret[_id]=(_title, _date)
 				else:
 					ret[_id]=(_title, _date)
-	print ret
-	for k, v in ret:
+	for k, v in ret.items():
 		print k,'\t','%s\t%s' % v
 	return ret if ret else None
 
