@@ -24,8 +24,8 @@ action list:
 
 ###Directory structure
 
->* *.id* index of the markdown files
-* *.layout*  layout files path
-* *.posts/date/markdown.md*  markdown files
-* *posts/date/html.html*  html files, when excute poster build, the html files translated fom markdown files
-* *index.html* 
+>* **.id** index of the markdown files
+* **.layout**  layout files path
+* **.posts/date/markdown.md**  markdown files
+* **posts/date/html.html**  html files, when excute poster build, the html files translated fom markdown files
+* **index.html**
