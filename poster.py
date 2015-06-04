@@ -95,6 +95,8 @@ def clear():
 		shutil.rmtree(LAYOUT_PATH)
 	if os.path.exists(MD_PATH):
 		shutil.rmtree(MD_PATH)
+	if os.path.exists(POST_PATH):
+		shutil.rmtree(POST_PATH)
 	if os.path.isfile(INDEX):
 		os.remove(INDEX)
 
@@ -222,21 +224,44 @@ def build():
 				with open(os.path.join(LAYOUT_PATH, '%s.layout'%_layout)) as _layout_file:
 					with open(os.path.join(POST_PATH, date, '%s.html'%title), 'w') as html:
 						html.write(_layout_file.read().format(content=markdown2.markdown(md.read()), title=title))
-	def rebuild_contents():
-		"""
-		从新生成目录
-		"""
-		re_text='\s*<\s*!--\s*\{\s*contents-start\s*\}\s*-->\s*\n((.|\n)*)\s*<\s*!--\s*\{\s*contents-end\s*\}\s*-->'
-		with open(HOME,'r+') as home:
-			dom = home.read()
-			m = re.search(re_text, dom)
-			if m:
-				print m.start(1), m.end(1)
-			else:
-				print 'no match'
-			
-	mk2html('test','2015-06-04')
-	rebuild_contents()
+	re_text='\s*<\s*!--\s*\{\s*contents-start\s*\}\s*-->\s*\n((.|\n)*)\s*<\s*!--\s*\{\s*contents-end\s*\}\s*-->'
+	with open(HOME,'r+') as home:
+		dom = home.read()
+		new_contents = []
+		with open(INDEX, 'r+') as index_file:
+			buf = []
+			for line in index_file:
+				if line and not line.startswith('#'):
+					_id, _title, _date = tuple(line[1:].split())
+					if line.startswith('+'):							
+						mk2html(_title, _date)
+						buf.append((' '+line[1:]).rstrip('\n'))
+						new_contents.append((_title, _date))
+					elif line.startswith('-'):
+						buf.append(line.rstrip('\n'))
+					elif line.startswith(' '):
+						buf.append(line.rstrip('\n'))
+						new_contents.append((_title, _date))
+				elif line.startswith('#'):
+					buf.append(line.rstrip('\n'))
+			index_file.seek(0)
+			index_file.truncate(0)
+			index_file.write('\n'.join(buf))
+		m = re.search(re_text, dom)
+		if m and new_contents:
+			content_start = m.start(1)
+			content_end = m.end(1)
+			before = dom[:content_start]
+			after = dom[content_end:]
+			home.seek(0)
+			home.truncate(0)
+			home.write(before)
+			home.write('<!--{contents-start}-->\n')
+			home.write('<ol>\n')
+			home.write('\n'.join(['<a href="posts/{date}/{title}.html" target="_blank">{title}</a>'.format(title=title, date=date) for title, date in new_contents]))
+			home.write('\n</ol>\n')
+			home.write('<!--{contents-end}-->')
+			home.write(after)
 
 	
 def usage(display=True):
