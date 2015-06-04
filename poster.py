@@ -10,12 +10,15 @@ import markdown2
 LAYOUT_PATH='.layout'
 DEFAULT_LAYOUT='default.layout'
 
-POST_PATH='.posts'
+POST_PATH='posts'
 
 INDEX='.id'
 
 DATE_FMT='%Y-%m-%d'
 
+
+def _check_env():
+	return os.path.isfile(INDEX) and os.path.exists(POST_PATH) and os.path.exists(LAYOUT_PATH)
 
 def init():
 	"""
@@ -98,7 +101,7 @@ def list(title=None, date=None):
 				else:
 					ret[_id]=(_title, _date)
 	for k, v in ret.items():
-		print k,'\t','%s\t%s' % v
+		print '%d\t%20s\t[%s]' % (k, v[0], v[1])
 	return ret if ret else None
 
 
@@ -110,13 +113,14 @@ def create(title, date):
 	:return
 	"""
 	if not title:
-		print '[!]title is required'
-		return
-	if date is None:
+		print '[!] title is required\n\n'
+		usage()
+	if not date:
 		date = datetime.datetime.now().strftime(DATE_FMT)
 	r = list(title, date)	
 	if r is not None:
-		print 'Create %s fail, it has exists'%title
+		print '[!] create %s %s fail, it has exists\n\n' % (title, date)
+		usage(False)
 	if not os.path.exists(os.path.join(POST_PATH, date)):
 		os.makedirs(os.path.join(POST_PATH, date))
 	with open(os.path.join(POST_PATH, date, '%s.md'%title), 'w') as post:
@@ -132,15 +136,6 @@ def create(title, date):
 			idfile.write('\n'.join(id_info))
 
 
-def edit(title, date):
-	"""
-	edit blog
-	:param tilte: blog title
-	:param date: blog created/modified date
-	:return
-	"""
-	print 'edit ', title, ' ', date
-	
 	
 def remove(title, date):
 	"""
@@ -149,11 +144,41 @@ def remove(title, date):
 	:param date: blog created/modified date
 	:return
 	"""
-	print 'remove ', title, ' ', date
+	if not title:
+		print '[!] title is required\n\n'
+		usage()
+	ret = list(title, date)
+	if not ret:
+		print '[!] %s %s not exists\n\n'%(title, date)
+		usage(False)
+	_id = None
+	_title, _date = None, None
+	if len(ret)>1:
+		try:
+			_id = int(raw_input('input id:'))
+			_title, _date = ret[_id]
+		except (ValueError, KeyError):
+			print '[!] invalid id\n\n'
+			usage()
+	else:
+		k, v = ret.items()[0]
+		_id = k
+		_title, _date = v
+	with open(INDEX,'r+') as idfile:
+		buf = []	
+		for line in idfile:
+			if not line.startswith('#') and int(line.lstrip().split()[0]) == _id:
+				buf.append(('#'+line[1:]).rstrip('\n'))
+			else:
+				buf.append(line.rstrip('\n'))
+		idfile.seek(0)
+		idfile.truncate(0)
+		idfile.write('\n'.join(buf))
+	
 	
 
 	
-def usage():
+def usage(display=True):
 	"""
 	print usage and exit
 	"""
@@ -162,14 +187,15 @@ def usage():
 		'\tpython poster action title [date]',
 		'',
 		'action list:'
+		'',
 		'\tinit: init github pages',
 		'\tclear: clear generated files',
-		'\tcreate: create new blog',
-		'\tedit: edit exist blog',
-		'\tremove: remove exist blog',
-		'\tlist: list blog',
+		'\tcreate title [date]: create new blog',
+		'\tremove title [date]: remove exist blog',
+		'\tlist [title] [date]: list blog',
 	]
-	print '\n'.join(usage)
+	if display:
+		print '\n'.join(usage)
 	sys.exit(1)
 
 if __name__ == '__main__':
@@ -179,6 +205,11 @@ if __name__ == '__main__':
 		clear()
 	elif len(sys.argv)>=2 and (sys.argv[1] != 'init' and sys.argv[1] != 'clear'):
 		action = sys.argv[1]
+		if action == '_check_env':
+			usage()
+		if not _check_env():
+			print '[!] need init first\n\n'
+			usage()
 		title = None
 		date = None
 		if len(sys.argv)>=3:
