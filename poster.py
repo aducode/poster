@@ -304,7 +304,8 @@ def usage(display=True):
 		print '\n'.join(usage)
 	sys.exit(1)
 
-if __name__ == '__main__':
+
+def main():
 	if len(sys.argv)>=2 and sys.argv[1] == 'init':
 		init()
 	elif len(sys.argv)>=2 and sys.argv[1] == 'clear':
@@ -350,3 +351,5 @@ if __name__ == '__main__':
 		usage()
 
 	
+if __name__ == '__main__':
+	main()
