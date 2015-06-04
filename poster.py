@@ -289,7 +289,7 @@ def usage(display=True):
 	"""
 	usage = [
 		'Usage:',
-		'\tpython poster action title [date]',
+		'\tposter action title [date]',
 		'',
 		'action list:'
 		'',
