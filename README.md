@@ -9,8 +9,7 @@ A simple tool for publish blog
 
 ###Quick Usage
 
-```python
-Usage:
+>Usage:
         poster action title [date]
 
 action list:
@@ -20,7 +19,6 @@ action list:
         remove name [date]: remove exist blog
         list [name] [date]: list blog
         build: markdown to html
-```
 
 ###Directory structure
 
