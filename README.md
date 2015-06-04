@@ -15,7 +15,6 @@ A simple tool for publish blog
 >action list:
 >
 >        init: init github pages
-
 >        clear: clear generated files
 >
 >        create name [date]: create new blog
