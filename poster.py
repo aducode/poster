@@ -10,7 +10,7 @@ import markdown2
 LAYOUT_PATH='.layout'
 DEFAULT_LAYOUT='default.layout'
 
-POST_PATH='posts'
+POST_PATH='.posts'
 
 INDEX='.id'
 
