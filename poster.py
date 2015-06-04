@@ -257,9 +257,9 @@ def build():
 			home.truncate(0)
 			home.write(before)
 			home.write('<!--{contents-start}-->\n')
-			home.write('<ol>\n')
-			home.write('\n'.join(['<a href="posts/{date}/{title}.html" target="_blank">{title}</a>'.format(title=title, date=date) for title, date in new_contents]))
-			home.write('\n</ol>\n')
+			home.write('<ul>\n')
+			home.write('\n'.join(['<li><a href="posts/{date}/{title}.html" target="_blank">{title} [{date}]</a></li>'.format(title=title, date=date) for title, date in new_contents]))
+			home.write('\n</ul>\n')
 			home.write('<!--{contents-end}-->')
 			home.write(after)
 
