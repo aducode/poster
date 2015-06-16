@@ -322,7 +322,7 @@ def main():
 		if len(sys.argv)>=3:
 			name = sys.argv[2].replace(' ', '_').replace('\t', '_')
 		if len(sys.argv)>=4:
-			date = ys.argv[3]
+			date = sys.argv[3]
 		if len(sys.argv)>=5:
 			title = sys.argv[4]
 		create(name, date, title)
