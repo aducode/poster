@@ -26,6 +26,9 @@ HOME='index.html'
 def _check_env():
 	return os.path.isfile(INDEX) and os.path.exists(MD_PATH) and os.path.exists(LAYOUT_PATH)
 
+def _markdown(source):
+	return markdown2.markdown(source)
+
 def init():
 	"""
 	init github pages
@@ -237,7 +240,7 @@ def build(force_build=True):
 			else:
 				with open(os.path.join(LAYOUT_PATH, '%s.layout'%_layout)) as _layout_file:
 					with open(os.path.join(POST_PATH, date, '%s.html'%name), 'w') as html:
-						html.write(_layout_file.read().format(content=markdown2.markdown(md.read()), title=_title))
+						html.write(_layout_file.read().format(content=_markdown(md.read()), title=_title))
 						return _title
 		
 	re_text='\s*<\s*!--\s*\{\s*contents-start\s*\}\s*-->\s*\n((.|\n)*)\s*<\s*!--\s*\{\s*contents-end\s*\}\s*-->'
@@ -328,7 +331,7 @@ def main():
 		create(name, date, title)
 	elif len(sys.argv)>=2 and (sys.argv[1] not in ('init', 'clear', 'build', 'create')):
 		action = sys.argv[1]
-		if action == '_check_env':
+		if action.startswith('_'):
 			usage()
 		if not _check_env():
 			print '[!] need init first\n\n'
