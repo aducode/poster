@@ -273,6 +273,14 @@ def build(force_build=True):
 			index_file.write('\n'.join(buf))
 		m = re.search(re_text, dom)
 		if m and new_contents:
+			def cmp_content(c1, c2):
+				if c1[2]<c2[2]:
+					return -1
+				elif c1[2] > c2[2]:
+					return 1
+				else:
+					return 0
+			new_contents.sort(cmp_content)
 			content_start = m.start(1)
 			content_end = m.end(1)
 			before = dom[:content_start]
