@@ -1,5 +1,5 @@
 # poster
-A simple tool for publish blog
+A simple tool for publish blog in github.io
 
 ###Install from source code
 
