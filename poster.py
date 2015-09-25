@@ -135,7 +135,9 @@ def list(name=None, date=None):
 				else:
 					ret[_id]=(_name, _date)
 	for k, v in ret.items():
-		print '%d\t%20s\t[%s]' % (k, v[0], v[1])
+		print '%d\t%30s\t\t\t[%s]' % (k, v[0], v[1])
+	print '-'*70
+	print 'total:',len(ret)
 	return ret if ret else None
 
 
