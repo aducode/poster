@@ -106,7 +106,7 @@ def clear():
 		os.remove(INDEX)
 
 
-def list(name=None, date=None):
+def list(name=None, date=None, show=True):
 	"""
 	list all the blogs
 	:param name: blog name
@@ -136,8 +136,9 @@ def list(name=None, date=None):
 					ret[_id]=(_name, _date)
 	for k, v in ret.items():
 		print '%d\t%30s\t\t\t[%s]' % (k, v[0], v[1])
-	print '-'*70
-	print 'total:',len(ret)
+	if show:
+		print '-'*70
+		print 'total:',len(ret)
 	return ret if ret else None
 
 
@@ -156,7 +157,7 @@ def create(name, date, title):
 		date = datetime.datetime.now().strftime(DATE_FMT)
 	if not title:
 		title = name
-	r = list(name, date)	
+	r = list(name, date, False)	
 	if r is not None:
 		print '[!] create %s %s fail, it has exists\n\n' % (name, date)
 		usage(False)
@@ -186,7 +187,7 @@ def remove(name, date):
 	if not name:
 		print '[!] name is required\n\n'
 		usage()
-	ret = list(name, date)
+	ret = list(name, date, False)
 	if not ret:
 		print '[!] %s %s not exists\n\n'%(name, date)
 		usage(False)
